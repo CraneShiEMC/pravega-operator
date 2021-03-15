@@ -79,6 +79,7 @@ The following table lists the configurable parameters of the pravega chart and t
 | `controller.resources.limits.memory` | Memory limits for controller | `2Gi` |
 | `controller.service.type` | Override the controller service type, if external access is enabled (LoadBalancer/NodePort) | |
 | `controller.service.annotations` | Annotations to add to the controller service, if external access is enabled | `{}` |
+| `controller.labels` | Labels to add to the controller pods | `{}` |
 | `controller.jvmOptions` | JVM Options for controller | `["-Xmx2g", "-XX:MaxDirectMemorySize=2g"]` |
 | `segmentStore.replicas` | Number of segmentStore replicas | `1` |
 | `segmentStore.secret` | Secret configuration for the segmentStore | `{}` |
@@ -92,6 +93,7 @@ The following table lists the configurable parameters of the pravega chart and t
 | `segmentStore.service.loadBalancerIP` |It is used to provide a LoadBalancerIP for the segmentStore service | |
 | `segmentStore.service.externalTrafficPolicy` | It is used to provide ExternalTrafficPolicy for the segmentStore service |  |
 | `segmentStore.jvmOptions` | JVM Options for segmentStore | `[]` |
+| `segmentStore.labels` | Labels to add to the segmentStore pods | `{}` |
 | `storage.longtermStorage.type` | Type of long term storage backend to be used (filesystem/ecs/hdfs) | `filesystem` |
 | `storage.longtermStorage.filesystem.pvc` | Name of the pre-created PVC, if long term storage type is filesystem | `pravega-tier2` |
 | `storage.longtermStorage.ecs` | Configuration to use a Dell EMC ECS system, if long term storage type is ecs | `{}` |
