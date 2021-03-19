@@ -64,11 +64,11 @@ func makeControllerPodSpec(p *api.PravegaCluster) *corev1.PodSpec {
 	var emptyDirVolumeMounts []string
 	var ok bool
 
-	if _, ok = p.Spec.Options["hostPathVolumeMounts"]; ok {
-		hostPathVolumeMounts = strings.Split(p.Spec.Options["hostPathVolumeMounts"], ",")
+	if _, ok = p.Spec.Pravega.Options["hostPathVolumeMounts"]; ok {
+		hostPathVolumeMounts = strings.Split(p.Spec.Pravega.Options["hostPathVolumeMounts"], ",")
 	}
-	if _, ok = p.Spec.Options["emptyDirVolumeMounts"]; ok {
-		emptyDirVolumeMounts = strings.Split(p.Spec.Options["emptyDirVolumeMounts"], ",")
+	if _, ok = p.Spec.Pravega.Options["emptyDirVolumeMounts"]; ok {
+		emptyDirVolumeMounts = strings.Split(p.Spec.Pravega.Options["emptyDirVolumeMounts"], ",")
 	}
 
 	var volumes []corev1.Volume
