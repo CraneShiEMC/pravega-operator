@@ -108,6 +108,20 @@ func makeControllerPodSpec(p *api.PravegaCluster) *corev1.PodSpec {
 		volumes = append(volumes, v)
 	}
 
+	name := "prvg"
+	configFileName := "prvg-log4j2.xml"
+	configVolume := corev1.Volume{
+		Name: fmt.Sprintf("%s-config-volume", name),
+		VolumeSource: corev1.VolumeSource{
+			ConfigMap: &corev1.ConfigMapVolumeSource{
+				LocalObjectReference: corev1.LocalObjectReference{
+					Name: fmt.Sprintf("%s-%s-log4j2", m.ECSCluster.GetName(), name),
+				},
+			},
+		},
+	}
+	volumes = append(volumes, configVolume)
+
 	podSpec := &corev1.PodSpec{
 		Containers: []corev1.Container{
 			{
@@ -136,7 +150,7 @@ func makeControllerPodSpec(p *api.PravegaCluster) *corev1.PodSpec {
 						},
 					},
 				},
-				VolumeMounts: createVolumeMount(hostPathVolumeMounts, emptyDirVolumeMounts),
+				VolumeMounts: createVolumeMount(hostPathVolumeMounts, emptyDirVolumeMounts, name, configFileName),
 				Resources:    *p.Spec.Pravega.ControllerResources,
 				ReadinessProbe: &corev1.Probe{
 					Handler: corev1.Handler{
@@ -181,7 +195,7 @@ func makeControllerPodSpec(p *api.PravegaCluster) *corev1.PodSpec {
 	return podSpec
 }
 
-func createVolumeMount(hostPathVolumeMounts []string, emptyDirVolumeMounts []string) []corev1.VolumeMount {
+func createVolumeMount(hostPathVolumeMounts []string, emptyDirVolumeMounts []string, name, configFileName string) []corev1.VolumeMount {
 	var volumeMounts []corev1.VolumeMount
 
 	if len(hostPathVolumeMounts) > 1 {
@@ -211,6 +225,14 @@ func createVolumeMount(hostPathVolumeMounts []string, emptyDirVolumeMounts []str
 		}
 		volumeMounts = append(volumeMounts, v)
 	}
+
+	configMount := corev1.VolumeMount{
+		Name:      fmt.Sprintf("%s-config-volume", name),
+		MountPath: fmt.Sprintf("/opt/storageos/conf/%s", configFileName),
+		SubPath:   configFileName,
+	}
+	volumeMounts = append(volumeMounts, configMount)
+
 	return volumeMounts
 }
 
