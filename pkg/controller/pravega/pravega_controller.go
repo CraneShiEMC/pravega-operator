@@ -228,7 +228,7 @@ func createVolumeMount(hostPathVolumeMounts []string, emptyDirVolumeMounts []str
 
 	configMount := corev1.VolumeMount{
 		Name:      fmt.Sprintf("%s-config-volume", name),
-		MountPath: fmt.Sprintf("/opt/storageos/conf/%s", configFileName),
+		MountPath: fmt.Sprintf("/opt/pravega/conf/%s", configFileName),
 		SubPath:   configFileName,
 	}
 	volumeMounts = append(volumeMounts, configMount)
