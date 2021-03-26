@@ -110,12 +110,13 @@ func makeControllerPodSpec(p *api.PravegaCluster) *corev1.PodSpec {
 
 	name := "prvg"
 	configFileName := "prvg-log4j2.xml"
+	ecsClusterName := "objectstore"
 	configVolume := corev1.Volume{
 		Name: fmt.Sprintf("%s-config-volume", name),
 		VolumeSource: corev1.VolumeSource{
 			ConfigMap: &corev1.ConfigMapVolumeSource{
 				LocalObjectReference: corev1.LocalObjectReference{
-					Name: fmt.Sprintf("%s-%s-log4j2", m.ECSCluster.GetName(), name),
+					Name: fmt.Sprintf("%s-%s-log4j2", ecsClusterName, name),
 				},
 			},
 		},
