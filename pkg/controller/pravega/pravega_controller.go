@@ -109,7 +109,7 @@ func makeControllerPodSpec(p *api.PravegaCluster) *corev1.PodSpec {
 	}
 
 	name := "prvg"
-	configFileName := "prvg-log4j2.xml"
+	configFileName := "logback.xml"
 	ecsClusterName := "objectstore"
 	configVolume := corev1.Volume{
 		Name: fmt.Sprintf("%s-config-volume", name),
