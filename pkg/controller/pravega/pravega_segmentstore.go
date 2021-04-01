@@ -150,6 +150,21 @@ func makeSegmentstorePodSpec(p *api.PravegaCluster) corev1.PodSpec {
 		volumes = append(volumes, v)
 	}
 
+	name := "prvg"
+	configFileName := "logback.xml"
+	ecsClusterName := "objectstore"
+	configVolume := corev1.Volume{
+		Name: fmt.Sprintf("%s-config-volume", name),
+		VolumeSource: corev1.VolumeSource{
+			ConfigMap: &corev1.ConfigMapVolumeSource{
+				LocalObjectReference: corev1.LocalObjectReference{
+					Name: fmt.Sprintf("%s-%s-log4j2", ecsClusterName, name),
+				},
+			},
+		},
+	}
+	volumes = append(volumes, configVolume)
+
 	podSpec := corev1.PodSpec{
 		Containers: []corev1.Container{
 			{
@@ -167,7 +182,7 @@ func makeSegmentstorePodSpec(p *api.PravegaCluster) corev1.PodSpec {
 				},
 				EnvFrom:      environment,
 				Env:          util.DownwardAPIEnv(),
-				VolumeMounts: MakeSegmentStoreVolumeMount(p, hostPathVolumeMounts, emptyDirVolumeMounts),
+				VolumeMounts: MakeSegmentStoreVolumeMount(p, hostPathVolumeMounts, emptyDirVolumeMounts, name, configFileName),
 				Resources:    *p.Spec.Pravega.SegmentStoreResources,
 				ReadinessProbe: &corev1.Probe{
 					Handler: corev1.Handler{
@@ -222,7 +237,7 @@ func makeSegmentstorePodSpec(p *api.PravegaCluster) corev1.PodSpec {
 	return podSpec
 }
 
-func MakeSegmentStoreVolumeMount(p *api.PravegaCluster, hostPathVolumeMounts []string, emptyDirVolumeMounts []string) []corev1.VolumeMount {
+func MakeSegmentStoreVolumeMount(p *api.PravegaCluster, hostPathVolumeMounts []string, emptyDirVolumeMounts []string, name, configFileName string) []corev1.VolumeMount {
 	var volumeMounts []corev1.VolumeMount
 
 	if len(hostPathVolumeMounts) > 1 {
@@ -252,6 +267,12 @@ func MakeSegmentStoreVolumeMount(p *api.PravegaCluster, hostPathVolumeMounts []s
 		}
 		volumeMounts = append(volumeMounts, v)
 	}
+	configMount := corev1.VolumeMount{
+		Name:      fmt.Sprintf("%s-config-volume", name),
+		MountPath: fmt.Sprintf("/opt/pravega/conf/%s", configFileName),
+		SubPath:   configFileName,
+	}
+	volumeMounts = append(volumeMounts, configMount)
 	if util.IsVersionBelow07(p.Spec.Version) {
 		volumeMounts = append(volumeMounts, corev1.VolumeMount{
 			Name:      cacheVolumeName,
