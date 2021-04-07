@@ -178,6 +178,12 @@ func makeSegmentstorePodSpec(p *api.PravegaCluster) corev1.PodSpec {
 						LocalObjectReference: corev1.LocalObjectReference{
 							Name: s[0],
 						},
+						Items: []corev1.KeyToPath{
+							{
+								Key:  s[1],
+								Path: s[1],
+							},
+						},
 					},
 				},
 			}
@@ -186,7 +192,6 @@ func makeSegmentstorePodSpec(p *api.PravegaCluster) corev1.PodSpec {
 			m := corev1.VolumeMount{
 				Name:      s[0],
 				MountPath: p[1],
-				SubPath:   s[1],
 			}
 			volumeMounts = append(volumeMounts, m)
 		}
