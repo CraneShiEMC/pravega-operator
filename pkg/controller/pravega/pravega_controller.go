@@ -139,7 +139,7 @@ func makeControllerPodSpec(p *api.PravegaCluster) *corev1.PodSpec {
 						Items: []corev1.KeyToPath{
 							{
 								Key:  s[1],
-								Path: s[1],
+								Path: ".",
 							},
 						},
 					},
