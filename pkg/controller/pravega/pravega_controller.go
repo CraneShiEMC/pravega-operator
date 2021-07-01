@@ -378,7 +378,7 @@ func MakeControllerService(p *api.PravegaCluster) *corev1.Service {
 }
 
 func MakeControllerPodDisruptionBudget(p *api.PravegaCluster) *policyv1beta1.PodDisruptionBudget {
-	minAvailable := intstr.FromInt(int(p.Spec.Pravega.MaxUnavailableControllerReplicas))
+	maxUnavailable := intstr.FromInt(int(p.Spec.Pravega.MaxUnavailableControllerReplicas))
 	return &policyv1beta1.PodDisruptionBudget{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "PodDisruptionBudget",
@@ -389,7 +389,7 @@ func MakeControllerPodDisruptionBudget(p *api.PravegaCluster) *policyv1beta1.Pod
 			Namespace: p.Namespace,
 		},
 		Spec: policyv1beta1.PodDisruptionBudgetSpec{
-			MinAvailable: &minAvailable,
+			MaxUnavailable: &maxUnavailable,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: p.LabelsForController(),
 			},
